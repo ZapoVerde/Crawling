@@ -9,8 +9,8 @@ def make_goblin():
 def make_spider():
     return Enemy(name="Giant Spider",
                  health=25,
-                 attack_min=4,
-                 attack_max=7,
+                 attack_min=0,
+                 attack_max=1,
                  defense=6,
                  traits={"poison_on_hit": {
                      "damage": 2,
