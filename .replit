@@ -1,0 +1,7 @@
+modules = ["python-3.12"]
+
+[replit]
+run = "python3 run.py"
+
+[nix]
+channel = "stable-24_05"
