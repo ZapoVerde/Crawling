@@ -57,6 +57,16 @@ class Game:
     target_direction: Optional[str] = None
     search_bonus_turns: int = 0
 
+    def get_effective_perception(self) -> int:
+        base_per = self.player.stats.get("PER", 0)
+        bonus = 3 if self.search_bonus_turns > 0 else 0
+        return base_per + bonus
+
+    def is_enemy_visible(self, enemy: Enemy) -> bool:
+        perception = self.get_effective_perception()
+        detection_score = perception - enemy.stealth + (enemy.size - 5)
+        return detection_score >= 0
+    
     def flee(self) -> List[str]:
         if not self.previous_key:
             return ["You have nowhere to run!"]
