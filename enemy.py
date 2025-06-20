@@ -16,7 +16,7 @@ class Enemy:
         self.size = size  # 1 (ant) to 10 (elephant)
         self.stealth = stealth  # How sneaky the enemy is
         self.perception = perception  # How good it is at detecting others
-
+        self.status_effects = []
     def attack(self):
         return random.randint(self.attack_min, self.attack_max)
 

@@ -10,9 +10,9 @@ def make_spider():
     return Enemy(name="Giant Spider",
                  health=25,
                  attack_min=0,
-                 attack_max=1,
+                 attack_max=2,
                  defense=6,
                  traits={"poison_on_hit": {
                      "damage": 2,
-                     "duration": 3
+                     "duration": 4
                  }})
