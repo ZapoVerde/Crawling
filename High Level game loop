@@ -1,0 +1,53 @@
+# engine.py — High-Level Game Loop (Global Initiative Model, Detailed Version)
+
+# Initialize the global initiative queue when the map loads or the game starts
+# Pseudo: initiative_utils.py → initialize_initiative_queue()
+initiative_queue = initialize_initiative_queue(all_actors)  # Includes player, enemies, possibly NPCs
+
+while True:
+    # 1. Perception Update (Active Look)
+    # File: player_utils.py → look()
+    # File: engine.py or visibility_utils.py → update_visibility_state()
+    # File: messaging.py → queue_room_description(), queue_entity_sightings()
+    visible_entities = look(player)
+    update_visibility_state(visible_entities)
+    queue_room_description(player.current_room)
+    queue_entity_sightings(visible_entities)
+
+    # 2. Initiative-Driven Action Phase
+    # File: initiative_utils.py → pop_next_actor()
+    actor = initiative_queue.pop_next_actor()
+
+    if actor.is_player:
+        # File: input_handler.py → get_player_input()
+        # File: player_utils.py → handle_player_action()
+        # File: player_utils.py → update_player_state()
+        # File: messaging.py → queue_player_action_feedback()
+        command = get_player_input()
+        handle_player_action(command)
+        update_player_state()
+        queue_player_action_feedback(command)
+    else:
+        # File: enemy_utils.py → handle_enemy_action()
+        # File: messaging.py → queue_enemy_action_feedback()
+        handle_enemy_action(actor)
+        queue_enemy_action_feedback(actor)
+
+    # File: initiative_utils.py → schedule_next_turn()
+    initiative_queue.schedule_next_turn(actor)
+
+    # 3. Passive Effects Phase (applies to the actor who just acted)
+    # File: status_effects.py → apply_status_effects()
+    # File: skills.py → tick_skill_progression()
+    # File: messaging.py → queue_status_effect_messages()
+    apply_status_effects(actor)
+    tick_skill_progression(actor)
+    queue_status_effect_messages(actor)
+
+    # 4. Cleanup Phase
+    # File: engine.py or world_utils.py → cleanup_entities()
+    # File: messaging.py → flush_message_queue()
+    cleanup_entities()
+    flush_message_queue()
+
+    # Return to the top of the loop and process the next actor in the queue

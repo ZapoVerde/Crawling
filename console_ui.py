@@ -1,10 +1,13 @@
 # console_ui.py
 from engine import build_game
 
-
 def main():
-    name = input("Enter your adventurer's name: ")
+    name = "Bob"
     game = build_game(name)
+    game.player.debug_mode = True
+
+    from item_data import get_basic_weapons
+    game.player.weapon = get_basic_weapons()["knife"]
 
     def print_room():
         for line in game.look():
@@ -13,11 +16,12 @@ def main():
     print_room()
 
     while True:
-        if game.player.health <= 0:
-            print("💀 You have died.")
+        if game.is_game_over():
+            for line in game.get_game_over_message():
+                print(line)
             break
 
-        if game.room.enemies and any(e.is_alive() for e in game.room.enemies):
+        if game.room.visible_enemies():
             cmd = input("\n(a=attack, r=run, q=quit) > ").lower().strip()[:1]
         else:
             available_dirs = "".join(game.room.exits.keys())
